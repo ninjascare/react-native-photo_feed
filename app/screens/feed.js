@@ -1,14 +1,62 @@
 import React, { Component } from "react";
 import { FlatList, StyleSheet, Text, View, Image } from "react-native";
+import { f, auth, database } from "../../Config/config";
 
-class feed extends Component {
+export default class feed extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      photo_feed: [0, 1, 2, 3, 4],
-      refresh: false
+      photo_feed: [],
+      refresh: false,
+      loading: true
     };
   }
+
+  componentDidMount = () => {
+    // load feed
+    this.loadFeed();
+  };
+
+  loadFeed = () => {
+    this.setState({
+      refresh: true,
+      photo_feed: []
+    });
+
+    let that = this;
+    database
+      .ref("photos")
+      .orderByChild("posted")
+      .once("value")
+      .then(snapshot => {
+        const exists = snapshot.val() != null;
+        if (exists) data = snapshot.val();
+        let photo_feed = that.state.photo_feed;
+
+        for (let photo in data) {
+          var photoObj = data[photo];
+          database
+            .ref("users")
+            .child(photoObj.author)
+            .once("value")
+            .then(snapshot => {
+              photo_feed.push({
+                id: photo,
+                url: photoObj.url,
+                caption: photoObj.caption,
+                posted: photoObj.posted,
+                author: data.username
+              });
+              that.setState({
+                refrsh: false,
+                loading: false
+              });
+            })
+            .catch(error => console.log(error));
+        }
+      })
+      .catch(error => console.log(error));
+  };
 
   loadNew = () => {
     this.setState({
@@ -92,5 +140,3 @@ class feed extends Component {
     );
   }
 }
-
-export default feed;
