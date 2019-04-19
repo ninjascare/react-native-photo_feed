@@ -11,7 +11,6 @@ const MainStack = createBottomTabNavigator({
   Profile: { screen: profile}
 });
 
-
 export default class App extends React.Component {
   render() {
     return (
