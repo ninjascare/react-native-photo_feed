@@ -1,5 +1,12 @@
 import React, { Component } from "react";
-import { FlatList, StyleSheet, Text, View, Image } from "react-native";
+import {
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Image
+} from "react-native";
 import { f, auth, database, storage } from "../../Config/config";
 
 export default class feed extends Component {
@@ -76,12 +83,15 @@ export default class feed extends Component {
             .child(photoObj.author)
             .once("value")
             .then(snapshot => {
+              const exists = snapshot.val() != null;
+              if (exists) data = snapshot.val();
               photo_feed.push({
                 id: photo,
                 url: photoObj.url,
                 caption: photoObj.caption,
                 posted: that.timeConverter(photoObj.posted),
-                author: data.username
+                author: data.username,
+                authorId: photoObj.author
               });
               that.setState({
                 refresh: false,
@@ -149,7 +159,15 @@ export default class feed extends Component {
                   }}
                 >
                   <Text>{item.posted}</Text>
-                  <Text>{item.author}</Text>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate("User", {
+                        userId: item.authorId
+                      })
+                    }
+                  >
+                    <Text>{item.author}</Text>
+                  </TouchableOpacity>
                 </View>
 
                 <View>

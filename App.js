@@ -1,17 +1,35 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { createBottomTabNavigator } from "react-navigation";
+import {
+  createStackNavigator,
+  createBottomTabNavigator
+} from "react-navigation";
+import { f, auth, database } from "./Config/config";
+
 import feed from "./app/screens/feed";
 import upload from "./app/screens/upload.js";
 import profile from "./app/screens/profile.js";
-import { f, auth, database } from "./Config/config";
+import userProfile from "./app/screens/userProfile.js";
+import comments from "./app/screens/comments.js";
 
-const MainStack = createBottomTabNavigator({
+const TabStack = createBottomTabNavigator({
   Feed: { screen: feed },
   Upload: { screen: upload },
   Profile: { screen: profile }
 });
 
+const MainStack = createStackNavigator(
+  {
+    Home: { screen: TabStack },
+    User: { screen: userProfile },
+    Comments: { screen: comments }
+  },
+  {
+    initialRouteName: "Home",
+    mode: "modal",
+    headerMode: "none"
+  }
+);
 export default class App extends React.Component {
   login = async () => {
     // force user to login
