@@ -78,6 +78,64 @@ export default class profile extends Component {
                 <Text>@username</Text>
               </View>
             </View>
+            <View style={{ paddingBottom: 20, borderBottomWidth: 1 }}>
+              <TouchableOpacity
+                style={{
+                  marginTop: 10,
+                  marginHorizontal: 40,
+                  paddingVertical: 15,
+                  borderRadius: 20,
+                  borderColor: "gray",
+                  borderWidth: 1.5
+                }}
+              >
+                <Text style={{ textAlign: "center", color: "gray" }}>
+                  Logout
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  marginTop: 10,
+                  marginHorizontal: 40,
+                  paddingVertical: 15,
+                  borderRadius: 20,
+                  borderColor: "gray",
+                  borderWidth: 1.5
+                }}
+              >
+                <Text style={{ textAlign: "center", color: "gray" }}>
+                  Edit Profile
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate("Upload")}
+                style={{
+                  backgroundColor: "gray",
+                  marginTop: 10,
+                  marginHorizontal: 40,
+                  paddingVertical: 15,
+                  borderRadius: 20,
+                  borderColor: "gray",
+                  borderWidth: 1.5
+                }}
+              >
+                <Text style={{ textAlign: "center", color: "white" }}>
+                  Upload New +
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "lightblue"
+              }}
+            >
+              <Text>Loading Photos</Text>
+            </View>
           </View>
         ) : (
           <View
