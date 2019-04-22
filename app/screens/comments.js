@@ -32,10 +32,10 @@ export default class upload extends Component {
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         {this.state.loggedIn == true ? (
           // are loggeed in
-          <Text>Upload Page</Text>
+          <Text>Comment Page</Text>
         ) : (
           <View>
-            <Text>Please login to upload new content</Text>
+            <Text>Please login to post a comment</Text>
           </View>
         )}
       </View>
