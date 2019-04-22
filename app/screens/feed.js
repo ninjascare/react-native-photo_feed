@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { FlatList, StyleSheet, Text, View, Image } from "react-native";
-import { f, auth, database } from "../../Config/config";
+import { f, auth, database, storage } from "../../Config/config";
 
 export default class feed extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ export default class feed extends Component {
   timeConverter = timestamp => {
     let a = new Date(timestamp * 1000);
     let seconds = Math.floor((new Date() - a) / 1000);
-    
+
     let interval = Math.floor(seconds / 31536000);
 
     if (interval > 1) {
