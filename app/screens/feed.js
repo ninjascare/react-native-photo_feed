@@ -188,7 +188,13 @@ export default class feed extends Component {
                       })
                     }
                   >
-                    <Text style={{ color: 'blue', marginTop: 10, textAlign: "center" }}>
+                    <Text
+                      style={{
+                        color: "blue",
+                        marginTop: 10,
+                        textAlign: "center"
+                      }}
+                    >
                       View Comments...
                     </Text>
                   </TouchableOpacity>

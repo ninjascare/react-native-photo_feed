@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Permissions, ImagePicker } from "expo";
 import {
   TouchableOpacity,
   Flatlist,
@@ -13,13 +14,66 @@ export default class upload extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedIn: false
+      loggedIn: false,
+      imageId: this.uniqueId()
     };
   }
 
-  findNewImage = () => {
-    //
+  checkPermissions = async () => {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({ camera: status });
+
+    const { statusRoll } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    this.setState({ cameraRoll: statusRoll });
   };
+
+  s4 = () => {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  };
+
+  uniqueId = () => {
+    return (
+      this.s4() +
+      this.s4() +
+      "-" +
+      this.s4() +
+      "-" +
+      this.s4() +
+      "-" +
+      this.s4() +
+      "-" +
+      this.s4() +
+      "-" +
+      this.s4() +
+      "-" +
+      this.s4()
+    );
+  };
+
+  findNewImage = async () => {
+    this.checkPermissions();
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: "Images",
+      allowsEditing: true,
+      quality: 1
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      console.log("upload Image");
+      this.uploadImage(result.uri);
+    } else {
+      console.log("cancel");
+    }
+  };
+
+  uploadImage = async ()=>{
+    
+  }
 
   componentDidMount = () => {
     var that = this;
