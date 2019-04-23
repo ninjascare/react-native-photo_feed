@@ -71,9 +71,52 @@ export default class upload extends Component {
     }
   };
 
-  uploadImage = async ()=>{
-    
-  }
+  uploadImage = async uri => {
+    var that = this;
+    let userId = f.auth().currentUser.uid;
+    let imageId = this.state.imageId;
+
+    let re = /(?:\.([^.]+))?$/;
+    let ext = re.exec(uri)[1];
+    that.setState({
+      currentFileType: ext
+    });
+
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    let FilePath = imageId + "." + that.state.currentFileType;
+
+    const ref = storage.ref("user/" + userId + "/img").child(FilePath);
+    var snapshot = ref.put(blob).on("state_changed", snapshot => {
+      console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
+    });
+
+    // uploadImage = async uri => {
+    //   var that = this;
+    //   var userid = f.auth().currentUser.uid;
+    //   var imageId = this.state.imageId;
+
+    //   var re = /(?:\.([^.]+))?$/;
+    //   var ext = re.exec(uri)[1];
+    //   this.setState({
+    //     currentFileType: ext,
+    //     uploading: true
+    //   });
+
+    //   /*const response = await fetch(uri);
+    //   const blob = await response.blob();*/
+    //   var FilePath = imageId + "." + that.state.currentFileType;
+
+    //   const oReq = new XMLHttpRequest();
+    //   oReq.open("GET", uri, true);
+    //   oReq.responseType = "blob";
+    //   oReq.onload = () => {
+    //     const blob = oReq.response;
+    //     //Call function to complete upload with the new blob to handle the uploadTask.
+    //     // this.completeUploadBlob(blob, FilePath);
+    //   };
+    //   oReq.send();
+  };
 
   componentDidMount = () => {
     var that = this;
