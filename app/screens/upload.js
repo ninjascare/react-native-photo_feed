@@ -90,7 +90,6 @@ export default class upload extends Component {
     var snapshot = ref.put(blob).on("state_changed", snapshot => {
       console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
     });
-
     // uploadImage = async uri => {
     //   var that = this;
     //   var userid = f.auth().currentUser.uid;
