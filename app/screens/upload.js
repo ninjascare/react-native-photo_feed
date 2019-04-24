@@ -20,7 +20,8 @@ export default class upload extends Component {
       imageId: this.uniqueId(),
       imageSelected: false,
       uploading: false,
-      caption: ""
+      caption: "",
+      progress: 0
     };
   }
 
@@ -84,25 +85,65 @@ export default class upload extends Component {
     }
   };
 
+  uploadPublish = () => {
+    if (this.state.caption != "") {
+      this.uploadImage(this.state.uri);
+    } else {
+      alert("Please enter a caption...");
+    }
+  };
+
   uploadImage = async uri => {
-    var that = this;
+    let that = this;
     let userId = f.auth().currentUser.uid;
     let imageId = this.state.imageId;
 
     let re = /(?:\.([^.]+))?$/;
     let ext = re.exec(uri)[1];
     that.setState({
-      currentFileType: ext
+      currentFileType: ext,
+      uploading: true
     });
 
     const response = await fetch(uri);
     const blob = await response.blob();
     let FilePath = imageId + "." + that.state.currentFileType;
 
-    const ref = storage.ref("user/" + userId + "/img").child(FilePath);
-    var snapshot = ref.put(blob).on("state_changed", snapshot => {
-      console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
-    });
+    let uploadTask = storage
+      .ref("user/" + userId + "/img")
+      .child(FilePath)
+      .put(blob);
+
+    uploadTask.on(
+      "state_changed",
+      snapshot => {
+        let progress = (
+          (snapshot.bytesTransferred / snapshot.totalBytes) *
+          100
+        ).toFixed(0);
+        console.log("Upload is" + progress + "% complete");
+        that.setState({
+          progress: progress
+        });
+      },
+      error => {
+        console.log("Error with upload -", error);
+      },
+      () => {
+        // complete
+        that.setState({
+          progress: 100
+        });
+        uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+          console.log(downloadURL);
+          alert(downloadURL);
+        });
+      }
+    );
+
+    // var snapshot = ref.put(blob).on("state_changed", snapshot => {
+    //   console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
+    // });
     // uploadImage = async uri => {
     //   var that = this;
     //   var userid = f.auth().currentUser.uid;
@@ -187,6 +228,45 @@ export default class upload extends Component {
                       borderRadius: 3,
                       backgroundColor: "white",
                       color: "black"
+                    }}
+                  />
+
+                  <TouchableOpacity
+                    onPress={() => this.uploadPublish()}
+                    style={{
+                      alignSelf: "center",
+                      width: 170,
+                      marginHorizontal: "auto",
+                      backgroundColor: "purple",
+                      borderRadius: 5,
+                      paddingVertical: 10,
+                      paddingHorizontal: 20
+                    }}
+                  >
+                    <Text style={{ textAlign: "center", color: "white" }}>
+                      Upload & Publish
+                    </Text>
+                  </TouchableOpacity>
+
+                  {this.state.uploading == true ? (
+                    <View style={{ marginTop: 10 }}>
+                      <Text>{this.state.progress}%</Text>
+                      {this.state.progress != 100 ? (
+                        <ActivityIndicator size="small" color="blue" />
+                      ) : (
+                        <Text>Processing...</Text>
+                      )}
+                    </View>
+                  ) : (
+                    <View />
+                  )}
+                  <Image
+                    source={{ uri: this.state.uri }}
+                    style={{
+                      marginTop: 10,
+                      resizeMode: "cover",
+                      width: "100%",
+                      height: 275
                     }}
                   />
                 </View>
