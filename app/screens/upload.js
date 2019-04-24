@@ -86,10 +86,14 @@ export default class upload extends Component {
   };
 
   uploadPublish = () => {
-    if (this.state.caption != "") {
-      this.uploadImage(this.state.uri);
+    if (this.state.uploading == false) {
+      if (this.state.caption != "") {
+        this.uploadImage(this.state.uri);
+      } else {
+        alert("Please enter a caption...");
+      }
     } else {
-      alert("Please enter a caption...");
+      console.log("Ignore button tap as already updating");
     }
   };
 
@@ -136,39 +140,47 @@ export default class upload extends Component {
         });
         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
           console.log(downloadURL);
-          alert(downloadURL);
+          that.processUpload(downloadURL);
         });
       }
     );
+  };
 
-    // var snapshot = ref.put(blob).on("state_changed", snapshot => {
-    //   console.log("Progress", snapshot.bytesTransferred, snapshot.totalBytes);
-    // });
-    // uploadImage = async uri => {
-    //   var that = this;
-    //   var userid = f.auth().currentUser.uid;
-    //   var imageId = this.state.imageId;
+  processUpload = imageUrl => {
+    // process here
+    // build photo obj
+    // author,caption,posted,url
 
-    //   var re = /(?:\.([^.]+))?$/;
-    //   var ext = re.exec(uri)[1];
-    //   this.setState({
-    //     currentFileType: ext,
-    //     uploading: true
-    //   });
+    // set needed info
+    let imageId = this.state.imageId;
+    let userId = f.auth().currentUser.uid;
+    let caption = this.state.caption;
+    let dateTime = Date.now();
+    let timestamp = Math.floor(dateTime / 1000);
 
-    //   /*const response = await fetch(uri);
-    //   const blob = await response.blob();*/
-    //   var FilePath = imageId + "." + that.state.currentFileType;
+    let photoObj = {
+      author: userId,
+      caption: caption,
+      posted: timestamp,
+      url: imageUrl
+    };
+    //  Update Database
 
-    //   const oReq = new XMLHttpRequest();
-    //   oReq.open("GET", uri, true);
-    //   oReq.responseType = "blob";
-    //   oReq.onload = () => {
-    //     const blob = oReq.response;
-    //     //Call function to complete upload with the new blob to handle the uploadTask.
-    //     // this.completeUploadBlob(blob, FilePath);
-    //   };
-    //   oReq.send();
+    // add to main feed
+    console.log('phtot obj ', photoObj)
+    database.ref("/photos/" + imageId).set(photoObj);
+
+    // set user photos object
+    database.ref("/users/" + userId + "/photos/" + imageId).set(photoObj);
+
+    alert("Image uploaded!!");
+
+    this.setState({
+      uploading: false,
+      imageSelected: false,
+      caption: "",
+      uri: ""
+    });
   };
 
   componentDidMount = () => {
