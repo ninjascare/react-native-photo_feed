@@ -193,7 +193,10 @@ export default class feed extends Component {
                       style={{
                         color: "blue",
                         marginTop: 10,
-                        textAlign: "center"
+                        textAlign: "center",
+                        backgroundColor: "#ABEBC6",
+                        marginLeft: "30%",
+                        marginRight: "30%"
                       }}
                     >
                       View Comments...
