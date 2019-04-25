@@ -167,7 +167,7 @@ export default class upload extends Component {
     //  Update Database
 
     // add to main feed
-    console.log("phtot obj ", photoObj);
+    console.log('phtot obj ', photoObj)
     database.ref("/photos/" + imageId).set(photoObj);
 
     // set user photos object

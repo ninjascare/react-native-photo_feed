@@ -60,6 +60,32 @@ export default class feed extends Component {
     return Math.floor(seconds) + "second" + this.pluralCheck(seconds);
   };
 
+  addToFlatlist = (photo_feed, data, photo) => {
+    let that = this;
+    let photoObj = data[photo];
+    database
+      .ref("users")
+      .child(photoObj.author)
+      .once("value")
+      .then(snapshot => {
+        const exists = snapshot.val() != null;
+        if (exists) data = snapshot.val();
+        photo_feed.push({
+          id: photo,
+          url: photoObj.url,
+          caption: photoObj.caption,
+          posted: that.timeConverter(photoObj.posted),
+          author: data.username,
+          authorId: photoObj.author
+        });
+        that.setState({
+          refresh: false,
+          loading: false
+        });
+      })
+      .catch(error => console.log(error));
+  };
+
   loadFeed = () => {
     this.setState({
       refresh: true,
@@ -77,28 +103,7 @@ export default class feed extends Component {
         let photo_feed = that.state.photo_feed;
 
         for (let photo in data) {
-          var photoObj = data[photo];
-          database
-            .ref("users")
-            .child(photoObj.author)
-            .once("value")
-            .then(snapshot => {
-              const exists = snapshot.val() != null;
-              if (exists) data = snapshot.val();
-              photo_feed.push({
-                id: photo,
-                url: photoObj.url,
-                caption: photoObj.caption,
-                posted: that.timeConverter(photoObj.posted),
-                author: data.username,
-                authorId: photoObj.author
-              });
-              that.setState({
-                refresh: false,
-                loading: false
-              });
-            })
-            .catch(error => console.log(error));
+          that.addToFlatlist(photo_feed, data, photo);
         }
       })
       .catch(error => console.log(error));
