@@ -190,7 +190,7 @@ export default class PhotoList extends Component {
                   <TouchableOpacity
                     onPress={() =>
                       this.props.navigation.navigate("Comments", {
-                        userId: item.id
+                        photoId: item.id
                       })
                     }
                   >
