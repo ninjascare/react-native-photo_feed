@@ -8,6 +8,7 @@ import {
   Image
 } from "react-native";
 import { f, auth, database, storage } from "../../Config/config";
+import PhotoList from "../components/PhotoList";
 
 export default class profile extends Component {
   constructor(props) {
@@ -145,16 +146,11 @@ export default class profile extends Component {
               </View>
             </View>
 
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "lightblue"
-              }}
-            >
-              <Text>Loading Photos</Text>
-            </View>
+            <PhotoList
+              isUser={true}
+              userId={this.state.userId}
+              navigation={this.props.navigation}
+            />
           </View>
         )}
       </View>

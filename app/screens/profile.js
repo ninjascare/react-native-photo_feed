@@ -8,6 +8,7 @@ import {
   Image
 } from "react-native";
 import { f, auth, database, storage } from "../../Config/config";
+import PhotoList from "../components/PhotoList";
 
 export default class profile extends Component {
   constructor(props) {
@@ -23,7 +24,8 @@ export default class profile extends Component {
       if (user) {
         // logged in
         that.setState({
-          loggedIn: true
+          loggedIn: true,
+          userId: user.uid
         });
       } else {
         // not logged in
@@ -126,16 +128,11 @@ export default class profile extends Component {
                 </Text>
               </TouchableOpacity>
             </View>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                backgroundColor: "lightblue"
-              }}
-            >
-              <Text>Loading Photos</Text>
-            </View>
+            <PhotoList
+              isUser={true}
+              userId={this.state.userId}
+              navigation={this.props.navigation}
+            />
           </View>
         ) : (
           <View
