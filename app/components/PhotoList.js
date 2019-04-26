@@ -89,7 +89,7 @@ export default class PhotoList extends Component {
           loading: false
         });
       })
-      .catch(error => console.log('Error FOool',error));
+      .catch(error => console.log("Error FOool", error));
   };
 
   loadFeed = (userId = "") => {
