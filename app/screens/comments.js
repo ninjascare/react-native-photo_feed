@@ -20,6 +20,24 @@ export default class comments extends Component {
     };
   }
 
+  componentDidMount = () => {
+    var that = this;
+    f.auth().onAuthStateChanged(user => {
+      if (user) {
+        // logged in
+        that.setState({
+          loggedIn: true
+        });
+      } else {
+        // not logged in
+        that.setState({
+          loggedIn: false
+        });
+      }
+    });
+    this.checkParams();
+  };
+
   checkParams = () => {
     //
     let params = this.props.navigation.state.params;
@@ -47,9 +65,9 @@ export default class comments extends Component {
         comment_list.push({
           id: comment,
           comment: commentObj.comment,
-          posted: that.timeCoverter(commentObj.posted),
+          posted: that.timeConverter(commentObj.posted),
           author: data,
-          authorId: commentobj.author
+          authorId: commentObj.author
         });
         that.setState({
           refresh: false,
@@ -57,6 +75,7 @@ export default class comments extends Component {
         });
       })
       .catch(err => console.log(err));
+    console.log(comment_list, data, comment);
   };
 
   fetchComments = photoId => {
@@ -146,24 +165,6 @@ export default class comments extends Component {
     return Math.floor(seconds) + "second" + this.pluralCheck(seconds);
   };
 
-  componentDidMount = () => {
-    var that = this;
-    f.auth().onAuthStateChanged(user => {
-      if (user) {
-        // logged in
-        that.setState({
-          loggedIn: true
-        });
-      } else {
-        // not logged in
-        that.setState({
-          loggedIn: false
-        });
-      }
-    });
-    this.checkParams();
-  };
-
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -237,7 +238,14 @@ export default class comments extends Component {
                   borderBottomWidth: 1,
                   borderColor: "grey"
                 }}
-              />
+              >
+                <View>
+                  <Text>{item.posted}</Text>
+                  <TouchableOpacity>
+                    <Text>{item.author}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             )}
           />
         )}
