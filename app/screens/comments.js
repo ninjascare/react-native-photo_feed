@@ -165,6 +165,8 @@ export default class comments extends Component {
     return Math.floor(seconds) + "second" + this.pluralCheck(seconds);
   };
 
+  postComment = () => {};
+
   render() {
     return (
       <View style={{ flex: 1 }}>
@@ -239,11 +241,31 @@ export default class comments extends Component {
                   borderColor: "grey"
                 }}
               >
-                <View>
+                <View
+                  style={{
+                    padding: 5,
+                    width: "100%",
+                    flexDirection: "row",
+                    justifyContent: "space-between"
+                  }}
+                >
                   <Text>{item.posted}</Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      this.props.navigation.navigate("User", {
+                        userId: item.authorId
+                      })
+                    }
+                  >
                     <Text>{item.author}</Text>
                   </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    padding: 5
+                  }}
+                >
+                  <Text>{item.comment}</Text>
                 </View>
               </View>
             )}
@@ -251,7 +273,41 @@ export default class comments extends Component {
         )}
         {this.state.loggedIn == true ? (
           // are loggeed in
-          <Text>Comment Page</Text>
+          <KeyboardAvoidingView
+            behavior="padding"
+            enabled
+            style={{
+              borderTopWidth: 1,
+              borderTopColor: "grey",
+              padding: 10,
+              marginBottom: 15
+            }}
+          >
+            <Text style={{ fontWeight: "bold" }}>Post Comment</Text>
+            <View>
+              <TextInput
+                editable={true}
+                placeholder="Enter your comment here ..."
+                onChangeText={text =>
+                  this.setState({
+                    comment: text
+                  })
+                }
+                style={{
+                  marginVertical: 10,
+                  height: 50,
+                  padding: 5,
+                  borderColor: "grey",
+                  borderRadius: 3,
+                  backgroundColor: "white",
+                  color: "black"
+                }}
+              />
+              <TouchableOpacity onPress={() => this.postComment()}>
+                <Text>Post</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
         ) : (
           <View>
             <Text>Please login to post a comment</Text>
