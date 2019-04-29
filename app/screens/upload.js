@@ -98,13 +98,13 @@ export default class upload extends Component {
   };
 
   uploadImage = async uri => {
-    let that = this;
-    let userId = f.auth().currentUser.uid;
-    let imageId = this.state.imageId;
+    var that = this;
+    var userid = f.auth().currentUser.uid;
+    var imageId = this.state.imageId;
 
-    let re = /(?:\.([^.]+))?$/;
-    let ext = re.exec(uri)[1];
-    that.setState({
+    var re = /(?:\.([^.]+))?$/;
+    var ext = re.exec(uri)[1];
+    this.setState({
       currentFileType: ext,
       uploading: true
     });
@@ -113,31 +113,45 @@ export default class upload extends Component {
     const blob = await response.blob();
     let FilePath = imageId + "." + that.state.currentFileType;
 
-    let uploadTask = storage
-      .ref("user/" + userId + "/img")
+    const oReq = new XMLHttpRequest();
+    oReq.open("GET", uri, true);
+    oReq.responseType = "blob";
+    oReq.onload = () => {
+      const blob = oReq.response;
+      //Call function to complete upload with the new blob to handle the uploadTask.
+      this.completeUploadBlob(blob, FilePath);
+    };
+    oReq.send();
+  };
+
+  completeUploadBlob = (blob, FilePath) => {
+    var that = this;
+    var userid = f.auth().currentUser.uid;
+    var imageId = this.state.imageId;
+
+    var uploadTask = storage
+      .ref("user/" + userid + "/img")
       .child(FilePath)
       .put(blob);
 
     uploadTask.on(
       "state_changed",
-      snapshot => {
-        let progress = (
+      function(snapshot) {
+        var progress = (
           (snapshot.bytesTransferred / snapshot.totalBytes) *
           100
         ).toFixed(0);
-        console.log("Upload is" + progress + "% complete");
+        console.log("Upload is " + progress + "% complete");
         that.setState({
           progress: progress
         });
       },
-      error => {
-        console.log("Error with upload -", error);
+      function(error) {
+        console.log("error with upload - " + error);
       },
-      () => {
-        // complete
-        that.setState({
-          progress: 100
-        });
+      function() {
+        //complete
+        that.setState({ progress: 100 });
         uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
           console.log(downloadURL);
           that.processUpload(downloadURL);
@@ -167,7 +181,7 @@ export default class upload extends Component {
     //  Update Database
 
     // add to main feed
-    console.log('phtot obj ', photoObj)
+    console.log("phtot obj ", photoObj);
     database.ref("/photos/" + imageId).set(photoObj);
 
     // set user photos object
