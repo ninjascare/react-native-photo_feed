@@ -165,7 +165,40 @@ export default class comments extends Component {
     return Math.floor(seconds) + "second" + this.pluralCheck(seconds);
   };
 
-  postComment = () => {};
+  postComment = () => {
+    let comment = this.state.comment;
+    if (comment != "") {
+      // process
+      let imageId = this.state.photoId;
+      let userId = f.auth().currentUser.uid;
+      let commentId = this.uniqueId();
+      let dateTime = Date.now();
+      let timestamp = Math.floor(dateTime / 1000);
+
+      this.setState({
+        comment: ""
+      });
+
+      commentObj = {
+        posted: timestamp,
+        author: userId,
+        comment: comment
+      };
+
+      database.ref("/comments/" + imageId + "/" + commentId).set(commentObj);
+      // reload comment
+      this.reloadCommentList();
+    } else {
+      alert("Please enter a comment before posting!");
+    }
+  };
+
+  reloadCommentList = () => {
+    this.setState({
+      comment_list: []
+    });
+    this.fetchComments(this.state.photoId);
+  };
 
   render() {
     return (
@@ -293,6 +326,7 @@ export default class comments extends Component {
                     comment: text
                   })
                 }
+                value={this.state.comment}
                 style={{
                   marginVertical: 10,
                   height: 50,
@@ -303,8 +337,16 @@ export default class comments extends Component {
                   color: "black"
                 }}
               />
-              <TouchableOpacity onPress={() => this.postComment()}>
-                <Text>Post</Text>
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 20,
+                  backgroundColor: "blue",
+                  borderRadius: 5
+                }}
+                onPress={() => this.postComment()}
+              >
+                <Text style={{ color: "white" }}>Post Comment</Text>
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
