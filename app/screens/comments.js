@@ -10,6 +10,7 @@ import {
   Image
 } from "react-native";
 import { f, auth, database, storage } from "../../Config/config";
+import UserAuth from "../components/auth";
 
 export default class comments extends Component {
   constructor(props) {
@@ -351,9 +352,7 @@ export default class comments extends Component {
             </View>
           </KeyboardAvoidingView>
         ) : (
-          <View>
-            <Text>Please login to post a comment</Text>
-          </View>
+          <UserAuth message={"Please login to post a comment "} />
         )}
       </View>
     );

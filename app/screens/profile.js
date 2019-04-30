@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { f, auth, database, storage } from "../../Config/config";
 import PhotoList from "../components/PhotoList";
+import UserAuth from "../components/auth";
 
 export default class profile extends Component {
   constructor(props) {
@@ -258,11 +259,7 @@ export default class profile extends Component {
             />
           </View>
         ) : (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <Text>Please login to view your profile </Text>
-          </View>
+          <UserAuth message={"Please login to view profile page"} />
         )}
       </View>
     );

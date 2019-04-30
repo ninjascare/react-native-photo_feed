@@ -11,6 +11,7 @@ import {
   Image
 } from "react-native";
 import { f, auth, database, storage } from "../../Config/config";
+import UserAuth from "../components/auth";
 
 export default class upload extends Component {
   constructor(props) {
@@ -323,11 +324,7 @@ export default class upload extends Component {
             )}
           </View>
         ) : (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <Text>Please login to upload new content</Text>
-          </View>
+          <UserAuth message={"Please login to upload new content"} />
         )}
       </View>
     );
