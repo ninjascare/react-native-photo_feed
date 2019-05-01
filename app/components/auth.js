@@ -20,7 +20,9 @@ export default class UserAuth extends Component {
     };
   }
 
-  componentDidMount = () => {};
+  componentDidMount = () => {
+    
+  };
 
   render() {
     return (
